@@ -1,0 +1,20 @@
+---
+
+provision_hosts:
+  - name: "swarm0.{{ env_name }}"
+    size_id: "512mb"
+    region_id: "sgp1"
+    image_id: "ubuntu-14-04-x64"
+    group: "manager"
+
+  - name: "swarm1.{{ env_name }}"
+    size_id: "512mb"
+    region_id: "sgp1"
+    image_id: "ubuntu-14-04-x64"
+    group: "worker"
+
+  - name: "swarm2.{{ env_name }}"
+    size_id: "512mb"
+    region_id: "sgp1"
+    image_id: "ubuntu-14-04-x64"
+    group: "worker"

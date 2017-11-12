@@ -1,0 +1,41 @@
+---
+
+- name: Ensure droplets exist
+  digital_ocean:
+    state: present
+    command: droplet
+    name: "{{ obj.name }}"
+    size_id: "{{ obj.size_id }}"
+    unique_name: yes
+    region_id: "{{ obj.region_id }}"
+    image_id: "{{ obj.image_id }}"
+    ssh_key_ids: "{{ my_ssh_key.ssh_key.id }}"
+    private_networking: yes
+  register: new_droplet
+
+- name: Remove droplet DNS record
+  digital_ocean_domain:
+    state: absent
+    name: "{{ obj.name }}.{{ domain }}"
+    ip: "{{ item }}"
+  with_items: "{{new_droplet|json_query(ip_query)}}"
+  vars:
+    ip_query: "droplet.networks.v4[?type=='public'].ip_address"
+
+- name: Add droplet DNS record
+  digital_ocean_domain:
+    state: present
+    name: "{{ obj.name }}.{{ domain }}"
+    ip: "{{ item }}"
+  with_items: "{{new_droplet|json_query(ip_query)}}"
+  vars:
+    ip_query: "droplet.networks.v4[?type=='public'].ip_address"
+
+- name: Add droplet to the inventory
+  add_host:
+    name: "{{ item }}"
+    groups: "{{ obj.group }}"
+    hostname: "name={{ obj.name }}.{{ domain }}"
+  with_items: "{{new_droplet|json_query(ip_query)}}"
+  vars:
+    ip_query: "droplet.networks.v4[?type=='public'].ip_address"

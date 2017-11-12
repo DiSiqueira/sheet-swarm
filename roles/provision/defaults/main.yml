@@ -1,0 +1,8 @@
+---
+
+provision_hosts:
+  - name: "test.env"
+    size_id: "512mb"
+    region_id: "sgp1"
+    image_id: "ubuntu-14-04-x64"
+    group: "manager"

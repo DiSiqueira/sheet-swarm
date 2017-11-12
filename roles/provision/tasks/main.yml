@@ -1,0 +1,8 @@
+---
+
+- include: check_keys.yml
+
+- include: provision.yml obj={{ host }}
+  with_items: "{{ provision_hosts }}"
+  loop_control:
+    loop_var: host
