@@ -125,3 +125,16 @@
         --advertise-addr={{ swarm_iface | default('eth1') }}:2377
         --token={{ token }}
         {{ groups['swarm_manager_ips'][0] }}:2377
+
+- hosts: swarm_manager_operational[0]
+  become: true
+  tasks:
+    - name: Install Portainer
+      shell: >
+        docker service create \
+        --name portainer \
+        --publish 9000:9000 \
+        --constraint 'node.role == manager' \
+        --mount type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock \
+        portainer/portainer \
+        -H unix:///var/run/docker.sock
