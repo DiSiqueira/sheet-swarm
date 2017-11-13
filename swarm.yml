@@ -10,7 +10,8 @@
     - manager
     - worker
   roles:
-    - angstwad.docker_ubuntu
+      - { role: emmetog.docker-compose, docker_compose_version: "1.7.1" }
+      - { role: angstwad.docker_ubuntu }
 
 - hosts: manager
   become: true
